@@ -1,0 +1,8 @@
+region    = "us-east-1"
+image_tag = "latest"
+
+# Override only if you used different secret names in Secrets Manager:
+# secret_name_openai_api_key      = "meridian/openai-api-key"
+# secret_name_mcp_server_url      = "meridian/mcp-server-url"
+# secret_name_langfuse_public_key = "meridian/langfuse-public-key"
+# secret_name_langfuse_secret_key = "meridian/langfuse-secret-key"
