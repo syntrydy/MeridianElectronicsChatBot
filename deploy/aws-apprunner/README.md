@@ -1,6 +1,6 @@
-# AWS App Runner deployment (experimental)
+# AWS App Runner deployment
 
-> Status: experimental. Primary deploy target is HF Spaces (see root `README.md`). This folder exists so we can A/B against AWS without touching the main path.
+> Primary deploy target. Single-container, HTTPS + autoscaling, secrets wired via Terraform variables.
 
 ## Why App Runner
 

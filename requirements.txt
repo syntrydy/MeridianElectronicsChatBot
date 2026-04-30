@@ -1,0 +1,8 @@
+gradio>=6.13.0
+langchain>=1.2.16
+langchain-mcp-adapters>=0.2.2
+langchain-openai>=1.2.1
+langfuse>=4.5.1
+langgraph>=1.1.10
+pydantic-settings>=2.14.0
+python-dotenv>=1.2.2

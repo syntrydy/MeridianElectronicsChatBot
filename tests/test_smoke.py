@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, ToolMessage
 
 from agent.graph import build_agent
+from tests.test_data import RETURNING_CUSTOMERS
 
 pytestmark = pytest.mark.smoke
 
@@ -50,6 +51,42 @@ async def test_order_history_requires_auth(agent):
     )
     text = out["messages"][-1].content.lower()
     assert any(k in text for k in ("email", "pin", "verify", "authenticate")), text
+
+
+async def test_authenticated_customer_can_view_orders(agent):
+    """Full happy-path: auth flips the guardrail open, then list_orders runs.
+
+    Pins demo flow #2 from CLAUDE.md (returning-customer auth → order history).
+    """
+    email, pin = RETURNING_CUSTOMERS[0]
+    out = await agent.ainvoke(
+        {
+            "messages": [
+                HumanMessage(
+                    content=(
+                        f"Hi, I'm a returning customer. My email is {email} and "
+                        f"my PIN is {pin}. Can you show me my recent orders?"
+                    )
+                )
+            ]
+        },
+        config={"configurable": {"thread_id": "smoke-auth-1"}},
+    )
+
+    tool_msgs = [m for m in out["messages"] if isinstance(m, ToolMessage)]
+    by_name = {m.name: m for m in tool_msgs}
+
+    assert "verify_customer_pin" in by_name, "auth tool was not called"
+    assert by_name["verify_customer_pin"].status != "error", (
+        f"auth failed: {by_name['verify_customer_pin'].content}"
+    )
+    assert "list_orders" in by_name, (
+        f"list_orders did not run after successful auth. tools={list(by_name)}"
+    )
+    list_msg = by_name["list_orders"]
+    assert list_msg.status != "error", (
+        f"list_orders rejected post-auth — guardrail did not flip. content={list_msg.content!r}"
+    )
 
 
 async def test_out_of_scope_request_is_refused(agent):

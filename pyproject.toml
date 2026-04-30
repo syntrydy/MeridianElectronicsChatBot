@@ -10,6 +10,7 @@ dependencies = [
     "langfuse>=4.5.1",
     "langgraph>=1.1.10",
     "pydantic-settings>=2.14.0",
+    "python-dotenv>=1.2.2",
 ]
 
 [dependency-groups]

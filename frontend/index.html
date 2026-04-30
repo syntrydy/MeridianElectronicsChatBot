@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meridian Electronics Support</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="header">
+        <div class="brand">
+          <span class="logo">M</span>
+          <div>
+            <h1>Meridian Electronics</h1>
+            <p>Support assistant</p>
+          </div>
+        </div>
+        <span id="status" class="status">connecting…</span>
+      </header>
+
+      <section id="messages" class="messages" aria-live="polite">
+        <div class="msg bot">
+          <div class="bubble">
+            Hi! Ask me about products, your orders, or place a new order.
+          </div>
+        </div>
+      </section>
+
+      <div class="suggestions" id="suggestions">
+        <button class="chip">Do you sell mechanical keyboards?</button>
+        <button class="chip">I'd like to check my recent orders.</button>
+        <button class="chip">I want to order a 27-inch monitor.</button>
+      </div>
+
+      <form id="form" class="composer">
+        <input
+          id="input"
+          type="text"
+          placeholder="Type your message…"
+          autocomplete="off"
+          required
+        />
+        <button id="send" type="submit">Send</button>
+      </form>
+    </main>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
