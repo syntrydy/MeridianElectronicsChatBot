@@ -6,7 +6,7 @@
 flowchart LR
     User([Customer])
 
-    subgraph HF["HF Space (Gradio SDK)"]
+    subgraph Runner["AWS App Runner instance (1 vCPU / 2 GB, min=max=1)"]
         UI["Gradio ChatInterface<br/>session_hash → thread_id"]
     end
 
@@ -85,6 +85,36 @@ sequenceDiagram
 - **Auth is MCP-side** — bot trusts the server to enforce it
 - **Logs never contain tool args or results** (PII)
 
+## Deploy pipeline (AWS App Runner)
+
+```mermaid
+flowchart LR
+    Dev([Developer])
+
+    subgraph Local["Local"]
+        Build["build.sh<br/>git ls-files → zip"]
+    end
+
+    subgraph AWS["AWS account"]
+        S3[(S3<br/>source bucket)]
+        CB["CodeBuild project<br/>aws/codebuild/standard:7.0<br/>privileged · BUILD_GENERAL1_SMALL"]
+        ECR[(ECR<br/>meridian-bot)]
+        Service["App Runner service<br/>meridian-bot"]
+        SM[(Secrets Manager<br/>meridian/*)]
+    end
+
+    Dev -->|terraform apply<br/>build.sh| Build
+    Build -->|aws s3 cp| S3
+    Build -->|start-build| CB
+    S3 --> CB
+    CB -->|docker build + push| ECR
+    Dev -->|terraform apply<br/>image_tag=&lt;sha&gt;| Service
+    ECR --> Service
+    SM -.runtime secrets.-> Service
+```
+
+Three phases per deploy: targeted `terraform apply` for the AWS skeleton (one-time), `build.sh` for image build (~80s), full `terraform apply` to roll the service forward (~3 min).
+
 ## Trust boundaries
 
 ```mermaid
@@ -92,7 +122,7 @@ flowchart TB
     subgraph Public["Public (untrusted)"]
         U[Customer browser]
     end
-    subgraph Space["HF Space (semi-trusted, public URL)"]
+    subgraph Runner["AWS App Runner (semi-trusted, public URL)"]
         G[Gradio + Agent]
     end
     subgraph Meridian["Meridian network (trusted)"]
@@ -108,4 +138,4 @@ flowchart TB
     class G gap
 ```
 
-Dashed border on the Space marks the **production gaps** documented in `CLAUDE.md`: no bot-side auth, no rate limiting, in-process session store, Langfuse PII redaction unresolved.
+Dashed border on the App Runner box marks the **production gaps** documented in `CLAUDE.md`: no bot-side auth, no rate limiting, in-process session store (pinned `min=max=1` to compensate), Langfuse PII redaction unresolved.
