@@ -92,6 +92,25 @@ pytest -m smoke        # hits real MCP
 
 AWS App Runner (Terraform + Docker). See [`deploy/aws-apprunner/README.md`](deploy/aws-apprunner/README.md) for the runbook. The four secrets (`OPENAI_API_KEY`, `MCP_SERVER_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`) are wired through Terraform variables, not committed.
 
+## Samples Screenshots
+### App screenshots
+
+<img width="1919" height="966" alt="Screenshot from 2026-04-30 17-48-33" src="https://github.com/user-attachments/assets/f78a2419-0868-44e0-8959-c33b1e6763d7" />
+
+### Observability screenshots
+
+#### Dashboard
+<img width="1898" height="944" alt="image" src="https://github.com/user-attachments/assets/7f0becd5-2478-4786-aa75-bb4bce7fe096" />
+
+#### Traces
+<img width="1898" height="944" alt="image" src="https://github.com/user-attachments/assets/79c8c7b5-9241-4fb4-a9d8-0234deae0f88" />
+
+#### Prompt management
+<img width="1898" height="944" alt="image" src="https://github.com/user-attachments/assets/10fd0016-c224-4714-b547-c3e1d0a6c1ef" />
+
+
+
+
 ## Conventions
 
 - Async end-to-end (`ainvoke`, async tool loader)
